@@ -1,1 +1,1 @@
-web: daphne -p 8001 api.asgi:application
+web: daphne -p $PORT api.asgi:application
