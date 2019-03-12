@@ -128,3 +128,4 @@ STATIC_URL = '/static/'
 
 
 ASGI_APPLICATION = "api.routing.application"
+ALLOWED_HOSTS = ['thawing-ravine-52538.herokuapp.com', ]
