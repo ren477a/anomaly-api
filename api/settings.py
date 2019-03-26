@@ -40,15 +40,18 @@ INSTALLED_APPS = [
 
     # apps
     'notifications',
+    'useraccounts',
 
     # Packages
     'rest_framework',
     'channels',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -128,4 +131,27 @@ STATIC_URL = '/static/'
 
 
 ASGI_APPLICATION = "api.routing.application"
-ALLOWED_HOSTS = ['thawing-ravine-52538.herokuapp.com', ]
+ALLOWED_HOSTS = [
+  'thawing-ravine-52538.herokuapp.com',
+  'localhost',
+  '127.0.0.1'
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
+
+CORS_ORIGIN_WHITELIST = (
+    'localhost:3000',
+)
+
+JWT_AUTH = {
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'useraccounts.utils.my_jwt_response_handler'
+}
