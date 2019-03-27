@@ -9,6 +9,9 @@ class Camera(models.Model):
     name = models.CharField(max_length=250)
     location = models.CharField(max_length=250)
 
+    def __str__(self):
+      return self.name
+
 
 class Person(models.Model):
     ROLE_OWNER = 'OWNER'
@@ -63,3 +66,6 @@ class Notification(models.Model):
     _type = models.CharField(max_length=250, choices=TYPE_CHOICES)
     timestamp = models.DateTimeField()
     camera = models.ForeignKey(Camera, related_name='notifications', on_delete=models.CASCADE)
+
+    def __str__(self):
+      return "{} - {}".format(self._type, self.camera)
