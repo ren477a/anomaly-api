@@ -16,8 +16,3 @@ class NotificationCreateSerializer(serializers.ModelSerializer):
     model = Notification
     fields = '__all__'
 
-
-class PersonSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Person
-    fields = '__all__'

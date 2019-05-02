@@ -1,13 +1,18 @@
-from django.http import HttpResponseRedirect
+import json
+import traceback
+
 from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
 from rest_framework import permissions, status
 from rest_framework.decorators import api_view
+from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
 from notifications.models import Person
-from notifications.serializers import PersonSerializer
-from .serializers import UserSerializer, UserSerializerWithToken
-import traceback
+
+from .serializers import (CreatePersonnelSerializer, PersonSerializer,
+                          UserSerializer, UserSerializerWithToken)
 
 
 @api_view(['GET'])
@@ -41,7 +46,7 @@ class UserList(APIView):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
   
 
-class UserUnderlingView(APIView):
+class UserPersonnelView(APIView):
   permission_classes = (permissions.IsAuthenticated,)
 
   def get(self, request, format=None):
@@ -55,8 +60,22 @@ class UserUnderlingView(APIView):
       return Response([], status=status.HTTP_404_NOT_FOUND)
 
   def post(self, request, format=None):
-    serializer = PersonSerializer(request)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    try:
+      request_data = JSONParser().parse(request)
+      person_serializer = CreatePersonnelSerializer(data=request_data)
+      user_serializer = UserSerializerWithToken(data=request_data)
+      if person_serializer.is_valid() and user_serializer.is_valid():
+          user_serializer.save()
+          user_data = user_serializer.validated_data
+          personnel_user = User.objects.get(username = user_data.get('username'))
+          person_data = person_serializer.validated_data
+          person_data.pop('username')
+          person_data.pop('password')
+          personnel = Person.objects.create(**person_data, user=personnel_user, admin=request.user.person)
+          return Response({
+            'user_id': personnel.user.pk,
+            'person_id': personnel.pk
+          }, status=status.HTTP_201_CREATED)
+    except:
+      print(traceback.format_exc())
+    return Response(person_serializer.errors or user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
