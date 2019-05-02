@@ -26,6 +26,7 @@ class Person(models.Model):
     email = models.EmailField()
     mobile = models.CharField(max_length=250)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
+    admin = models.ForeignKey('self', related_name='underlings', null=True, on_delete=models.CASCADE)
 
 
 class Camera(models.Model):
