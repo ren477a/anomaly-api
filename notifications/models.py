@@ -5,14 +5,6 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-class Camera(models.Model):
-    name = models.CharField(max_length=250)
-    location = models.CharField(max_length=250)
-
-    def __str__(self):
-      return self.name
-
-
 class Person(models.Model):
     ROLE_OWNER = 'OWNER'
     ROLE_PERSONNEL = 'PERSONNEL'
@@ -27,7 +19,15 @@ class Person(models.Model):
     email = models.EmailField()
     mobile = models.CharField(max_length=250)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
-    cameras = models.ManyToManyField(Camera, related_name='persons')
+
+
+class Camera(models.Model):
+    name = models.CharField(max_length=250)
+    location = models.CharField(max_length=250)
+    owner = models.ForeignKey(Person, related_name='cameras', on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+      return self.name
 
 
 class Notification(models.Model):
