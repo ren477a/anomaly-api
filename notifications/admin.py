@@ -4,3 +4,4 @@ from .models import Notification, Camera, Person
 
 admin.site.register(Notification)
 admin.site.register(Camera)
+admin.site.register(Person)
