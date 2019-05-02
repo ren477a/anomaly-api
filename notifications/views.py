@@ -22,11 +22,11 @@ Delete (Clear history)
 """
 
 class NotificationList(APIView):
-  permission_classes = (permissions.AllowAny,)
+  permission_classes = (permissions.IsAuthenticated,)
 
   def get(self, request, format=None):
     items = request.GET.get('items', None)
-    print(self.user)
+    # TODO: Filter by logged in user usr ListAPIView
     notifications = Notification.objects.all()
 
     if items:
