@@ -1,5 +1,12 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+import traceback
+import json
 
 
 User = get_user_model()
@@ -69,3 +76,26 @@ class Notification(models.Model):
 
     def __str__(self):
       return "{} - {}".format(self._type, self.camera)
+
+
+@receiver(post_save, sender=Notification)
+def send_notif_after_save(sender, instance, **kwargs):
+    print("Signal from post_save fired {}".format(instance.timestamp))
+    channel_layer = get_channel_layer()
+    try:
+        user_id = instance.camera.owner.user.pk
+    except:
+        print("[Error] Unable to send notif err={}".format(traceback.format_exc()))
+        return
+    group_name = "user_{}".format(user_id)
+    async_to_sync(channel_layer.group_send)(
+    group_name,
+    {
+        "type": "chat.message",
+        "message": {
+            "type": instance._type,
+            "timestamp": instance.timestamp.strftime("%m/%d/%Y, %H:%M:%S"),
+            "camera": instance.camera.name
+        },
+    }
+)
