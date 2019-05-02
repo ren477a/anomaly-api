@@ -4,7 +4,10 @@ from rest_framework import permissions, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from notifications.models import Person
+from notifications.serializers import PersonSerializer
 from .serializers import UserSerializer, UserSerializerWithToken
+import traceback
 
 
 @api_view(['GET'])
@@ -32,6 +35,27 @@ class UserList(APIView):
 
   def post(self, request, format=None):
     serializer = UserSerializerWithToken(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+  
+
+class UserUnderlingView(APIView):
+  permission_classes = (permissions.IsAuthenticated,)
+
+  def get(self, request, format=None):
+    try:
+      print(request.user.person)
+      persons = Person.objects.filter(admin=request.user.person)
+      serializer = PersonSerializer(persons, many=True)
+      return Response(serializer.data, status=status.HTTP_200_OK)
+    except:
+      print(traceback.format_exc())
+      return Response([], status=status.HTTP_404_NOT_FOUND)
+
+  def post(self, request, format=None):
+    serializer = PersonSerializer(request)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)

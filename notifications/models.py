@@ -20,13 +20,16 @@ class Person(models.Model):
         (ROLE_PERSONNEL, 'Personnel'),
     )
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, related_name='person', on_delete=models.CASCADE)
     first_name = models.CharField(max_length=250)
     last_name = models.CharField(max_length=250)
     email = models.EmailField()
     mobile = models.CharField(max_length=250)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     admin = models.ForeignKey('self', related_name='underlings', null=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "{} {}".format(self.first_name, self.last_name)
 
 
 class Camera(models.Model):
