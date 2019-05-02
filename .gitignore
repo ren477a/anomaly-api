@@ -89,3 +89,10 @@ local_settings.py
 
 .env
 db.sqlite3
+notifications/watcher/009-2.088-spatial.hdf5
+.gitignore
+notifications/watcher/Shooting012_x264.mp4
+notifications/watcher/Shooting047_x264.mp4
+notifications/watcher/Shooting048_x264.mp4
+notifications/watcher/Shooting050_x264.mp4
+notifications/watcher/Shooting051_x264.mp4
