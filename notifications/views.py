@@ -2,9 +2,10 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from rest_framework import permissions, status
 from rest_framework.decorators import api_view
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import NotificationSerializer
+from .serializers import NotificationListSerializer, NotificationCreateSerializer
 from .models import Notification
 
 """
@@ -25,6 +26,7 @@ class NotificationList(APIView):
 
   def get(self, request, format=None):
     items = request.GET.get('items', None)
+    print(self.user)
     notifications = Notification.objects.all()
 
     if items:
@@ -35,3 +37,13 @@ class NotificationList(APIView):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class NotificationListCreate(generics.ListCreateAPIView):
+    queryset = Notification.objects.all()
+    serializer_class = NotificationCreateSerializer
+    permission_classes = (permissions.AllowAny,)
+
+    def list(self, request):
+        # Note the use of `get_queryset()` instead of `self.queryset`
+        queryset = self.get_queryset()
+        serializer = NotificationListSerializer(queryset, many=True)
+        return Response(serializer.data)

@@ -2,9 +2,16 @@ from rest_framework import serializers
 from .models import Notification
 
 
-class NotificationSerializer(serializers.ModelSerializer):
+class NotificationListSerializer(serializers.ModelSerializer):
   camera = serializers.StringRelatedField()
 
   class Meta:
     model = Notification
-    fields = ('_type', 'timestamp', 'camera')
+    fields = '__all__'
+
+
+class NotificationCreateSerializer(serializers.ModelSerializer):
+
+  class Meta:
+    model = Notification
+    fields = '__all__'
