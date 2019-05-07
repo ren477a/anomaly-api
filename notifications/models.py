@@ -26,7 +26,7 @@ class Person(models.Model):
     email = models.EmailField()
     mobile = models.CharField(max_length=250)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
-    admin = models.ForeignKey('self', related_name='underlings', null=True, on_delete=models.CASCADE)
+    admin = models.ForeignKey('self', related_name='underlings', blank=True, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return "{} {}".format(self.first_name, self.last_name)
