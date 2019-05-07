@@ -5,10 +5,18 @@ from notifications.models import Person
 
 
 class UserSerializer(serializers.ModelSerializer):
+    role = serializers.SerializerMethodField()
+    admin = serializers.SerializerMethodField()
+    
+    def get_role(self, obj):
+        return obj.person.role
+
+    def get_admin(self, obj):
+        return obj.person.admin.id
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'email')
+        fields = ('id', 'username', 'first_name', 'last_name', 'email', 'role', 'admin')
 
 
 class UserSerializerWithToken(serializers.ModelSerializer):
