@@ -8,6 +8,7 @@ def send_notification(prediction):
     klass, confidence = prediction
     user_id = 1
     camera_id = 1
+    timestamp = str(datetime.datetime.now().isoformat())
     response = requests.post(
         NOTIF_URL, 
         data = 

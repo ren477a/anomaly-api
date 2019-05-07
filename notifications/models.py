@@ -102,8 +102,8 @@ def send_notif_after_save(sender, instance, **kwargs):
         "type": "chat.message",
         "message": {
             "type": instance._type,
-            "timestamp": instance.timestamp.strftime("%m/%d/%Y, %H:%M:%S"),
-            "camera": instance.camera.name
+            "timestamp": "{}".format(instance.timestamp),
+            "name": instance.camera.name
         },
     }
 )
