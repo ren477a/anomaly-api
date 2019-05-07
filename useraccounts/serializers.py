@@ -12,7 +12,10 @@ class UserSerializer(serializers.ModelSerializer):
         return obj.person.role
 
     def get_admin(self, obj):
-        return obj.person.admin.id
+        if obj.person.admin is not None:
+            return obj.person.admin.id
+        return None
+            
 
     class Meta:
         model = User
