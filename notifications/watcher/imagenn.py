@@ -16,8 +16,8 @@ PREDICTION_FREQUENCY = 8  # 1-10
 model = models.load_model('notifications/watcher/009-2.088-spatial.hdf5')
 
 VID_FILE = 'notifications/watcher/Shooting050_x264.mp4'
-video = cv2.VideoCapture(VID_FILE)
-# video = cv2.VideoCapture(0)
+# video = cv2.VideoCapture(VID_FILE)
+video = cv2.VideoCapture(0)
 
 
 def show_classification(cv2, frame, prediction):

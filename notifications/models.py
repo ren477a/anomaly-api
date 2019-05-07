@@ -7,6 +7,7 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 import traceback
 import json
+from .tasks import send_sms
 
 
 User = get_user_model()
@@ -27,6 +28,7 @@ class Person(models.Model):
     mobile = models.CharField(max_length=250)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     admin = models.ForeignKey('self', related_name='underlings', blank=True, null=True, on_delete=models.CASCADE)
+    enable_sms = models.BooleanField(default=True)
 
     def __str__(self):
         return "{} {}".format(self.first_name, self.last_name)
@@ -87,11 +89,13 @@ def send_notif_after_save(sender, instance, **kwargs):
     print("Signal from post_save fired {}".format(instance.timestamp))
     channel_layer = get_channel_layer()
     try:
-        user_id = instance.camera.owner.user.pk
+        owner = instance.camera.owner
+        user_id = owner.user.pk
     except:
         print("[Error] Unable to send notif err={}".format(traceback.format_exc()))
         return
     group_name = "user_{}".format(user_id)
+    send_sms(owner.id, instance.id, schedule=0)
     async_to_sync(channel_layer.group_send)(
     group_name,
     {
