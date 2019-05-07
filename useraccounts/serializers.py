@@ -8,7 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username',)
+        fields = ('id', 'username', 'first_name', 'last_name', 'email')
 
 
 class UserSerializerWithToken(serializers.ModelSerializer):
@@ -49,4 +49,4 @@ class CreatePersonnelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Person
-        fields = ('username', 'password', 'first_name', 'last_name', 'email', 'mobile', 'role', )
+        fields = ('username', 'password', 'first_name', 'last_name', 'email', 'mobile', 'role' )
